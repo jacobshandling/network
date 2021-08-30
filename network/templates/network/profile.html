@@ -1,0 +1,89 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+<div class="container profile-info">
+    <h2>{{ profile_username }}</h2>
+    {% if profile_username != user %}
+        <div class="profile-actions">
+        
+                <!-- unfollow button -->
+                {% if user in followers %}
+                <form id="unfollow" style="display:block">
+                {% else %}
+                <form id="unfollow" style="display:none">
+                {% endif %}
+                    <input type=submit class="btn btn-primary" value='Unfollow'/>
+                </form>
+            
+                <!-- follow button -->
+                {% if user in followers %}
+                <form id="follow" style="display: none">
+                {% else %}
+                <form id="follow" style="display:block">
+                {% endif %}
+                    <input type=submit class="btn btn-primary" value='Follow'/>
+                </form>
+            
+        </div>
+    {% endif %}
+
+    {% if followers %}
+        <h5>{{ followers.count }} followers</h5>
+    {% else %}
+        <h5>no followers</h5>
+    {% endif %}
+
+    {% if following %}
+        <h5>{{ following.count }} following</h5>
+    {% else %}
+        <h5>following noone</h5>
+    {% endif %}
+</div>
+<hr>
+<!-- user's posts in reverse chronological order -->
+<div class="profile-posts-view container">
+    <h3>{{ profile_username }}'s posts</h3>
+    {% for post, user_likes_post, post_seconds_timestamp in posts_and_user_likes_post_and_post_timestamps %}
+    <div class="post" data-post-id={{ post.id }} data-user-has-liked={{ user_likes_post }} data-seconds-timestamp = {{ post_seconds_timestamp }}>
+            <div class="post-content">
+                <h4 class="post-time">{{ post.time }}</h4>
+                <h4 class="post-body">{{ post.body }}</h4>
+                <p class="like-count">{{ post.likers.count }} likes</p>
+            </div>
+            <div class="post-actions">
+                <button class="like-btn btn-sm btn-outline-primary">Like</button>
+                {% if post.user == user %}
+                    <button class="edit-btn btn btn-sm btn-outline-primary">Edit</button>
+                {% endif %}
+            </div>
+        </div>
+        <br>
+    {% endfor %}
+    
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+    
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+    
+</div>
+
+{% endblock %}
+
+{% block script %}
+    <script>const profile_user_id = "{{ profile_user_id }}"</script>
+    <script src="{% static 'network/profile.js' %}"></script> 
+{% endblock %}
