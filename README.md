@@ -1,4 +1,4 @@
-# network - A twitter-like social network built with Django and vanilla JavaScript
+# network - a Twitter-like social network built with Django and vanilla JavaScript
 
 You can see a run-through [here](https://www.youtube.com/watch?v=FBqxbH8EeA8)
 
